@@ -14,7 +14,7 @@ public class Main extends Application
 		try
 		{
 			RootBorderPane root = new RootBorderPane();
-			Scene scene = new Scene(root, 600, 250);
+			Scene scene = new Scene(root, 450, 200);
 			primaryStage.setScene(scene);
 				primaryStage.setTitle("Kontaktanfrage");
 			primaryStage.show();

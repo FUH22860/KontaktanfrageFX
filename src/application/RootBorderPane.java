@@ -18,7 +18,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 
 public class RootBorderPane extends BorderPane {
@@ -32,6 +34,8 @@ public class RootBorderPane extends BorderPane {
 	private Button btPruefen, btSpeichern;
 	private ToggleGroup tgRadios;
 	private GridPane gpZentrum;
+	private HBox hbRadio;
+	private FlowPane fpButton;
 	
 	public RootBorderPane() {
 		initComponents();
@@ -54,12 +58,18 @@ public class RootBorderPane extends BorderPane {
 		rbTelefonisch = new RadioButton("telefonisch");
 		rbEgal = new RadioButton("egal");
 		
-		cbSofort = new CheckBox();
+		cbSofort = new CheckBox("(binnen eines Tages)");
 		
 		gpZentrum = new GridPane();
-			gpZentrum.setHgap(10);
-			gpZentrum.setVgap(10);
+			gpZentrum.setHgap(5);
+			gpZentrum.setVgap(5);
 			gpZentrum.setPadding(new Insets(5));
+			
+		hbRadio = new HBox(5);
+		
+		fpButton = new FlowPane();
+			fpButton.setHgap(5);
+			fpButton.setPadding(new Insets(5));
 		
 		btPruefen = new Button("Pruefen");
 		btSpeichern = new Button("Speichern und absenden");
@@ -76,37 +86,59 @@ public class RootBorderPane extends BorderPane {
 		gpZentrum.add(new Label("Name:"), 						0, 1);
 		gpZentrum.add(new Label("Telefonnummer:"), 				0, 2);
 		gpZentrum.add(new Label("Sofortige Kontaktaufnahme:"), 	0, 3);
-		gpZentrum.add(new Label("(binnen eines Tages)"), 		2, 3);
+//		gpZentrum.add(new Label("(binnen eines Tages)"), 		2, 3);
 		
-		gpZentrum.add(rbPersoenlich, 	1, 0);
-		gpZentrum.add(rbTelefonisch, 	2, 0);
-		gpZentrum.add(rbEgal, 			3, 0);
-		gpZentrum.add(cbSofort,			1, 3);
-		
-		gpZentrum.add(btPruefen,	0, 6);
-		gpZentrum.add(btSpeichern,	1, 6);
+		gpZentrum.add(hbRadio, 			1, 0);
+		gpZentrum.add(cbSofort, 		1, 3);
 		
 		gpZentrum.add(tfName, 			1, 1);
 		gpZentrum.add(tfTelefonnummer, 	1, 2);
 		
-		GridPane.setColumnSpan(tfName, 3);
-		GridPane.setColumnSpan(tfTelefonnummer, 3);
+//		GridPane.setColumnSpan(tfName, 3);
+//		GridPane.setColumnSpan(tfTelefonnummer, 3);
 		
 		tgRadios.getToggles().addAll(rbPersoenlich, rbTelefonisch, rbEgal);
 		
+		hbRadio.getChildren().addAll(rbPersoenlich, rbTelefonisch, rbEgal);
+		
+		fpButton.getChildren().addAll(btPruefen, btSpeichern);
+		
 		setTop(menuBar);
 		setCenter(gpZentrum);
+		setBottom(fpButton);
 		
 	}
 
 	private void addHandler() {
 		miBeenden.setOnAction(event -> beenden());
+		btPruefen.setOnAction(Event -> pruefen());
+		// TODO Speichern
 	}
 
 	// ---------------------- handlers -----------------------
 	
 	private void beenden() {
 		Platform.exit();
+	}
+	
+	private void pruefen() {
+		String name = tfName.getText();
+		String tel = tfTelefonnummer.getText();
+		
+		try {
+			if(name.isEmpty() | tel.isEmpty() | tgRadios.getSelectedToggle() == null) {
+				Main.showAlert(AlertType.INFORMATION, "Pruefen Sie bitte die Eingaben: Art der Kontaktaufnahme, Name und Telefonnummer werden benoetigt");
+			} else {
+				if(rbPersoenlich.isSelected() & cbSofort.isSelected()) {
+					Main.showAlert(AlertType.INFORMATION, "Sofortige persoenliche Kontaktaufnahmen sollten derzeit wegen langer Wartezeiten nicht abgesendet werden");
+				} else {
+					Main.showAlert(AlertType.INFORMATION, "Die Pruefung war erfolgreich. Die Eingaben der Kontaktanfrage sind in Ordnung");
+				}
+			}
+			
+		} catch (Exception e){
+			Main.showAlert(AlertType.ERROR, e.getMessage());
+		}
 	}
 	
 }
