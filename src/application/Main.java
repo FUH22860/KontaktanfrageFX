@@ -15,37 +15,36 @@ public class Main extends Application
 		{
 			RootBorderPane root = new RootBorderPane();
 			Scene scene = new Scene(root, 450, 200);
+			
+			primaryStage.setTitle("Kontaktanfrage");
+			
 			primaryStage.setScene(scene);
-				primaryStage.setTitle("Kontaktanfrage");
 			primaryStage.show();
 		}
 		catch (Exception e)
 		{
-			showAlert(AlertType.ERROR, e.getMessage());
-		}
-	}
-
-	public static void showAlert(AlertType alertType, String message)
-	{
-		if (message != null)
-		{
-			Alert alert = new Alert(alertType, message, ButtonType.OK);
-			alert.setHeaderText(null);
-			if (alertType == AlertType.WARNING)
-				alert.setTitle("Warnung");
-			else
-				alert.setTitle("Hinweis-Meldung");
-			alert.showAndWait();
-		}
-		else
-		{
-			Alert alert = new Alert(alertType, "Bitte waehlen Sie \"Weiter\" aus", ButtonType.NEXT);
-			alert.setHeaderText(null);
-			alert.setTitle("Hinweis-Meldung");
-			alert.showAndWait();
+			showAlert(e.getMessage());
 		}
 	}
 	
+	public static void showAlert(String message)
+	{
+		if (message != null) 
+		{
+			Alert alert = new Alert(AlertType.INFORMATION, message, ButtonType.OK);
+			alert.setHeaderText(null); 
+			alert.setTitle("Hinweis");
+			alert.showAndWait(); 
+		}
+		else
+		{
+			Alert alert = new Alert(AlertType.INFORMATION, "Bitte mit \"Weiter\" bestaetigen", ButtonType.NEXT);
+			alert.setHeaderText(null);
+			alert.setTitle("Hinweis");
+			alert.showAndWait();
+		}
+	}
+
 	public static void main(String[] args)
 	{
 		launch(args);
